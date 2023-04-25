@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use App\Models\Booking;
+use App\Models\User;
+use App\Models\Hall;
 
 class Admin extends Authenticatable  implements JWTSubject
 {
@@ -25,7 +28,7 @@ class Admin extends Authenticatable  implements JWTSubject
     ];
 
     protected $fillable = [
-        'name', 'email','password','created_at', 'updated_at'
+        'name', 'email','password','photo','created_at', 'updated_at'
     ];
 
 
@@ -48,6 +51,14 @@ class Admin extends Authenticatable  implements JWTSubject
     {
         return [];
     }
+
+    function bookings() {
+
+        return $this->hasMany(Booking::class);
+
+    }
+
+
 }
 
 

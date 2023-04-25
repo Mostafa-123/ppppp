@@ -4,26 +4,21 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Admin;
 use App\Models\User;
 use App\Models\Owner;
-use App\Models\Hall;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use DateTimeInterface;
-
-
-
-class Booking extends Model
+class PlanRequest extends Model
 {
     use SoftDeletes, HasFactory;
 
 
     protected $fillable = [
+        'planner_id',
+        'planner_name',
+        'user_id',
         'user_name',
-        'hall_name',
-        'hall_id',
-        'check_in_date',
-        'check_out_date',
+        'plan_id',
+        'plan_name',
         'price',
         'status',
 
@@ -46,15 +41,12 @@ class Booking extends Model
 
     protected $orderable = [
         'id',
-        'halls.name',
-        'name',
+
         'status',
     ];
 
     protected $filterable = [
         'id',
-        'halls.name',
-        'name',
         'status',
     ];
 
@@ -81,10 +73,7 @@ class Booking extends Model
     ],
 ];
 
-protected function serializeDate(DateTimeInterface $date)
-{
-    return $date->format('Y-m-d H:i:s');
-}
+
 
 
 public function getStatusLabelAttribute()
@@ -93,26 +82,20 @@ public function getStatusLabelAttribute()
 }
 
 
+function user() {
 
-    function admin() {
+    return $this->belongsTo(User::class, 'user_id');
 
-        return $this->belongsTo(admin::class, 'user_id');
+}
+function plannner() {
 
-    }
-    function user() {
+    return $this->belongsTo(Planner::class, );
 
-        return $this->belongsTo(User::class, 'user_id');
+}
+function plan() {
 
-    }
-    function owner() {
+    return $this->belongsTo(Plan::class,);
 
-        return $this->belongsTo(Owner::class, );
-
-    }
-    function hall() {
-
-        return $this->belongsTo(hall::class,'hall_id');
-
-    }
+}
 
 }

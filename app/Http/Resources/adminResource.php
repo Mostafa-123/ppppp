@@ -4,7 +4,7 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class personResource extends JsonResource
+class adminResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -16,18 +16,13 @@ class personResource extends JsonResource
     {
         $photo=$this->photo;
         if($photo){
-            $photo="http://127.0.0.1:8000/api/userphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/api/adminphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
             'email'=>$this->email,
             'password'=>$this->password,
-            'country'=>$this->country,
-            'religion'=>$this->religion,
-            'gender'=>$this->gender,
-            'national_id'=>$this->national_id,
-            'role'=>$this->role,
             'photo'=>$photo,
         ];
     }

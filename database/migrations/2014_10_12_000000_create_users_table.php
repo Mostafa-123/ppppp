@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('national_id');
             $table->string('role');
             $table->string('comments')->nullable();
+            $table->string('photo')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });

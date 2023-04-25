@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\adminResource;
+use App\Http\responseTrait;
 use Illuminate\Http\Request;
 use App\Http\Traits\GeneralTraits;
 use App\Models\Admin;
@@ -21,7 +23,40 @@ class AuthController extends Controller
 
 
     use GeneralTraits;
+    use responseTrait;
+    public function registerAdmin(Request $request) {
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|between:2,100',
+            'email' => 'required|string|email|max:100|unique:users',
+            'password' => 'required|string|min:6',
+            'photo',
 
+
+        ]);
+        if($validator->fails()){
+            return response()->json($validator->errors()->toJson(), 400);
+        }
+        $admin = Admin::create(array_merge(
+            $validator->validated(),
+            ['password' => bcrypt($request->password),
+            'photo' => $this->uploadFile($request,'adminImages','photo'),
+            ]
+        ));
+        return response()->json([
+            'message' => 'admin successfully registered',
+            'admin' => new adminResource($admin),
+        ], 201);
+    }
+    public function getAdminPhoto($owner_id){
+        $owner=Admin::find($owner_id);
+        if($owner){
+            if($owner->photo){
+                return $this->getFile($owner->photo);
+            }
+            return $this->response("", "This Patient doesn't has photo",404);
+        }
+        return $this->response( "", 'this Pateint_id not found',401);
+    }
 
     public function login(Request $request){
 
@@ -49,7 +84,7 @@ class AuthController extends Controller
         $admin = Auth::guard('admin-api')->user();
         $admin->api_token = $token;
         //return token
-        return $this->returnData('admin', $admin,"data have returned");
+        return $this->returnData('admin',new adminResource($admin),"data have returned");
 
 
         }

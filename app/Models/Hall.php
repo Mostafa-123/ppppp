@@ -7,12 +7,16 @@ use Illuminate\Database\Eloquent\Model;
 use Carbon\Carbon;
 use DateTimeInterface;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use App\Models\Booking;
+use App\Models\Admin;
+use App\Models\User;
+
 
 class Hall extends Model
 {
     use HasFactory;
 
-    protected $table = 'hall';
+    protected $table = 'halls';
     protected $dates = [
         'start_party',
         'end_party',
@@ -23,13 +27,33 @@ class Hall extends Model
 
 
     protected $fillable=['name','address','rooms','chairs','price','hours','tables','type','capacity','available','start_party',
-    'end_party','person_id'];
+    'end_party','person_id','verified'];
+
+
+
+    public function photos()
+    {
+        return $this->hasMany(Photo::class);
+    }
+
+    function Owner()
+    {
+        $this->belongsTo(Owner::class);
+    }
 
 
 
 
 
-protected function serializeDate(DateTimeInterface $date)
+
+
+
+
+
+
+
+
+    protected function serializeDate(DateTimeInterface $date)
 {
     return $date->format('Y-m-d H:i:s');
 }
@@ -61,12 +85,12 @@ public function confirmedBookings()
 
 public function rejectedBookings()
 {
-    return $this->hasMany(Booking::class)->where('status', 'rejected');
+    return $this->hasMany(Booking::class)->where('status', 'cancelled');
 }
 
 public function processingBookings()
 {
-    return $this->hasMany(Booking::class)->where('status', 'processing');
+    return $this->hasMany(Booking::class)->where('status', 'unconfirmed');
 }
 
 }

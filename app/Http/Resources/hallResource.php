@@ -12,8 +12,15 @@ class hallResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
-    public function toArray($request)
+    public function toArray($data)
     {
+        $photos=$data->photos;
+            if($photos){
+                $i=0;
+                for($i=0;$i<count($photos);$i++){
+                    $photo[$i]="http://127.0.0.1:8000/api/hallphoto/".$data->id."/".$photos[$i]->id;
+                }
+            }
         return [
             'id'=>$this->id,
             'name'=>$this->name,
@@ -26,7 +33,10 @@ class hallResource extends JsonResource
             'type'=>$this->type,
             'capacity'=>$this->capacity,
             'available'=>$this->available,
+            'start_party'=>$this->start_party,
+            'end_party'=>$this->end_party,
             'person_id'=>$this->person_id,
+            'photos'=>$photo,
         ];
     }
 }

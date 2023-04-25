@@ -57,6 +57,10 @@ return [
             'driver' => 'jwt',
             'provider' => 'owners',
     ],
+        'planner-api' => [
+            'driver' => 'jwt',
+            'provider' => 'planners',
+    ],
     ],
 
     /*
@@ -84,6 +88,14 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => App\Models\Admin::class,
+        ],
+        'owners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Owner::class,
+        ],
+        'Planners' => [
+            'driver' => 'eloquent',
+            'model' => App\Models\Planner::class,
         ],
         // 'users' => [
         //     'driver' => 'database',

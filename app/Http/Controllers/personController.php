@@ -18,6 +18,6 @@ class personController extends Controller
         if ($validator->fails()) {
             return $this->response(null,$validator->errors(),400);
         }
-       return $this->addComment($req,$id);
+        return $this->addComment($req,$id);
     }
 }

@@ -2,6 +2,7 @@
 
 /* use App\Http\Controllers\AuthController; */
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\http\Controllers\AuthwController;
 use App\Http\Controllers\Api\User\AuthController as UserAuthController;
 use App\Http\Controllers\hallsController;
 use Illuminate\Http\Request;
@@ -50,9 +51,10 @@ Route::group([
 
             });
 
-    Route::post('/register', [AuthController::class, 'register']);
+    Route::post('/register', [AuthwController::class, 'register']);
     Route::post('/refresh', [AuthController::class, 'refresh']);
     Route::get('/user-profile', [AuthController::class, 'userProfile']);
+    Route::get('userphoto/{user_id}', [AuthwController::class, 'getUserPhoto']);
 });
 
 

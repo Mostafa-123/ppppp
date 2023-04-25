@@ -4,7 +4,8 @@ namespace App\Http\classes;
 
 use App\Http\Resources\hallResource;
 use App\Http\responseTrait;
-use App\Models\halls;
+use App\Models\Hall;
+/* use App\Models\halls; */
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -12,7 +13,7 @@ trait hallsClasses
 {
     use responseTrait;
     public function getHall($id){
-        $result=halls::find($id);
+        $result=Hall::find($id);
         if(!$result){
             return $this->response(null,'hall not found',404);
         }
@@ -20,12 +21,17 @@ trait hallsClasses
         return $this->response(new hallResource( $result),'ok',200);
     }
     public function getHalls(){
-        $result= hallResource::collection( halls::get());
+        $result= hallResource::collection( Hall::get());
+
+        return $this->response($result,'ok',200);
+    }
+    public function getConfirmedHalls(){
+        $result= hallResource::collection( Hall::where('status', 'unconfirmed')->get());
 
         return $this->response($result,'ok',200);
     }
     public function addHall(Request $req){
-        $result=halls::create($req->all());
+        $result=Hall::create($req->all());
         if($result){
             return $this->response(new hallResource( $result),'done',201);
         }else{
@@ -33,7 +39,7 @@ trait hallsClasses
         }
     }
     public function updateAnyInfoInHall(Request $req,$id){
-        $result=halls::find($id);
+        $result=Hall::find($id);
 
         if(!$result){
             return $this->response(null,'The hall Not Found',404);
@@ -58,7 +64,7 @@ trait hallsClasses
         }
     }
     public function updateAllInfoOfHall(Request $req ,$id){
-        $result=halls::find($id);
+        $result=Hall::find($id);
 
         if(!$result){
             return $this->response(null,'The hall Not Found',404);
@@ -74,7 +80,7 @@ trait hallsClasses
     }
     public function destroyHall($id){
 
-        $result=halls::find($id);
+        $result=Hall::find($id);
 
         if(!$result){
             return $this->response(null,'The post Not Found',404);

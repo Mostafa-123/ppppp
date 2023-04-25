@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\User;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\personResource;
 use Illuminate\Http\Request;
 use App\Http\Traits\GeneralTraits;
 use App\Models\User;
@@ -52,7 +53,7 @@ class UserAuthController extends Controller
         $user = Auth::guard('user-api')->user();
         $user->api_token = $token;
         //return token
-        return $this->returnData('user', $user,"data have returned");
+        return $this->returnData('user',new personResource($user),"data have returned");
 
 
 

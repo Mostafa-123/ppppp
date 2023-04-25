@@ -1,13 +1,15 @@
 <?php
 
-/* use App\Http\Controllers\AuthController; */
 use App\Http\Controllers\Api\Admin\AuthController;
+use App\Http\Controllers\Api\Owner\OwnerController;
+use App\Http\Controllers\Api\Owner\OwnerAuthController;
 use App\Http\Controllers\BookingController;
-use App\Http\Controllers\Api\User\AuthController as UserAuthController;
-use App\Http\Controllers\hallsController;
+
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\hallResource;
+
 
 /*
 |--------------------------------------------------------------------------
@@ -30,13 +32,25 @@ Route::group([
 
 ], function ($router) {
 
-    Route::group(['namespace'=>'Admin'],function (){
-        Route::post('login', [AuthController::class, 'login'])->name('login-admin');
-        Route::post('logout',[ AuthController::class,'logout'])-> middleware(['auth.guard:admin-api']);
+    Route::group(['namespace'=>'Owner'],function (){
+        Route::post('loginOwner', [OwnerAuthController::class, 'login'])->name('login-Owner');
+        Route::post('logoutOwner',[ OwnerAuthController::class,'logout'])-> middleware(['auth.guard:owner-api']);
+        Route::post('registerOwner', [OwnerAuthController::class, 'registerOwner']);
+        Route::post('updateOwner', [OwnerAuthController::class, 'updateOwner']);
+        Route::get('profileOfOwner', [OwnerAuthController::class, 'userProfile']);
+            });
+});
+Route::group([
+    'middleware' => ['api'],
+    'namespace'=>'Api',
 
+], function ($router) {        // Hall
+        Route::post('/addHallRequest', [OwnerController::class, 'addHallRequests']);
+        Route::get('/DestroyAllHallRequest', [OwnerController::class, 'DestroyAllHallRequest']);
+        Route::get('destroyHallRequest/{request_id}', [OwnerAuthController::class, 'destroyHallRequest']);
+        Route::get('ownerphoto/{user_id}', [OwnerAuthController::class, 'getOwnerPhoto']);
+        Route::post('updateAllInfoOfHallRequest/{user_id}', [OwnerController::class, 'updateAllInfoOfHallRequest']);
 
-        // Hall
-        Route::apiResource('Hall', 'HallApiController');
 
         // Bookings
 /*         Route::apiResource('bookings', 'BookingsApiController');
@@ -47,26 +61,7 @@ Route::group([
            Route::post('/bookings/{bookingId}/confirm', [BookingController::class, 'confirmBooking']);
            Route::post('/bookings/{bookingId}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
            Route::delete('/bookings/rejected', [BookingController::class, 'destroyRejectedBookings']);
-
-
-
-
-
-            });
-
-
-
-
-
-
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
 });
-
-
-
-
 
 
 
