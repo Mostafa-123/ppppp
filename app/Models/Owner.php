@@ -27,6 +27,7 @@ class Owner extends  Authenticatable  implements JWTSubject
         'country',
         'religion',
         'gender',
+        'phone',
         'photo',
 /*         'hall_id', */
 

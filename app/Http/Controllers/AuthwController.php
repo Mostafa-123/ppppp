@@ -77,16 +77,7 @@ class AuthwController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function getUserPhoto($user_id){
-        $user=User::find($user_id);
-        if($user){
-            if($user->photo){
-                return $this->getFile($user->photo);
-            }
-            return $this->response("", "This Patient doesn't has photo",404);
-        }
-        return $this->response( "", 'this Pateint_id not found',401);
-    }
+
     public function logout() {
         auth()->logout();
         return response()->json(['message' => 'User successfully signed out']);

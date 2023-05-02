@@ -1,18 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\Api\Planner;
-
-namespace App\Models;
-
 use Illuminate\Http\Request;
 use App\Http\Resources\PlanResource;
 
 use App\Models\Plan;
+use App\Models\PlanRequest;
+use App\Models\PlanPhoto;
 use App\Http\Traits\GeneralTraits;
 use App\Http\Controllers\Controller;
 use App\Http\responseTrait;
-use Illuminate\Support\Facades\Validator;
 use App\Models\Planner;
+use Illuminate\Support\Facades\Validator;
 
 class PlannerController extends Controller
 {
@@ -25,12 +24,15 @@ class PlannerController extends Controller
             'name'=>'required|max:255',
             'description'=>'required|max:255',
             'price'=>'required',
-            'photos',
         ]);
         if ($validator->fails()) {
             return $this->response(null,$validator->errors(),400);
         }
-        $result=Plan::create($request->only(['name','description','price']));
+        $result=Plan::create([
+            'name'=>$request->name,
+            'description'=>$request->description,
+            'price'=>$request->price,
+        ]);
         if($request->photos[0]){
             for($i=0;$i<count($request->photos);$i++) {
                 $path=$this->uploadMultiFile($request,$i,'planPhotos','photos');
@@ -39,9 +41,8 @@ class PlannerController extends Controller
                     'plan_id'=>$result->id,
                 ]);}
             }
-
         if($result){
-            return $this->response(new PlanResource( $result),'done',201);
+            return $this->response($this->planResources($result),'done',201);
         }else{
             return $this->response(null,'plan is not saved',405);
         }
@@ -49,7 +50,7 @@ class PlannerController extends Controller
     public function deletePlan($plan_id){
         $plan=Plan::find($plan_id);
         if($plan){
-            $photos=$plan->planPhoto;
+            $photos=$plan->planPhotos;
             if($photos){
                 for($i=0;$i<count($photos);$i++) {
                     $path=$photos[$i]->photoname;
@@ -77,7 +78,7 @@ class PlannerController extends Controller
         $plan = plan::find($plan_id);
 
         if ($plan) {
-            $photos = $plan->planPhoto;
+            $photos = $plan->planPhotos;
 
             if ($request->photos[0]) {
                 if ($photos) {
@@ -116,11 +117,12 @@ class PlannerController extends Controller
         } else {
             return $this->response('', 'plan not  found', 404);
         }
-        return $this->response(new PlanResource($plan), 'hall updated successfully', 200);
+        return $this->response($this->planResources($plan), 'plan updated successfully', 200);
     }
 
     public function addPhotoToMyplan(Request $request, $plan_id)
     {
+
         $plan = plan::find($plan_id);
 
         if ($plan) {
@@ -136,8 +138,48 @@ class PlannerController extends Controller
         } else {
             return $this->response('', 'plan not founded successfully', 200);
         }
-        return $this->response(new PlanResource($plan), 'photos added successfully', 200);
+        return $this->response($this->planResources($plan), 'photos added successfully', 200);
     }
+
+    public function getplan($plan_id) {
+        $plan=Plan::find($plan_id);
+        if($plan){
+            return $this->response($this->planResources($plan),"a plan Data",201);
+        }
+        return $this->response('',"this plan_id not found",401);
+    }
+
+
+    public function getAllPlannerPlans($planner_id){
+        $planner=Planner::find($planner_id);
+        if($planner){
+            $plans=$planner->plan;
+            if($plans){
+                foreach($plans as $plan){
+                    $data[]=$this->planResources($plan);
+                }
+                return $this->response($data,"planner plans",201);
+            }return $this->response('',"This planner dosnt have plans",404);
+
+        }return $this->response('',"This planner id not found",401);
+    }
+    public function getAllPlans(){
+        $plans=Plan::where('verified', 'confirmed')->get();
+        if($plans){
+                foreach($plans as $plan){
+                    $data[]=$this->planResources($plan);
+            }
+            return $this->response($data,"plans returned successfuly",200);
+        }return $this->response('',"somthing wrong",401);
+    }
+
+
+
+
+
+
+
+
     public function viewConfirmedBookingsPlans()
     {
         $bookingplans = PlanRequest::where('status', 'confirmed')->get();

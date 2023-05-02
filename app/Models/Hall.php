@@ -27,13 +27,28 @@ class Hall extends Model
 
 
     protected $fillable=['name','address','rooms','chairs','price','hours','tables','type','capacity','available','start_party',
-    'end_party','person_id','verified'];
+    'end_party','owner_id','verified'];
 
 
 
     public function photos()
     {
         return $this->hasMany(Photo::class);
+    }
+
+    public function videos()
+    {
+        return $this->hasMany(Video::class);
+    }
+
+    public function shows()
+    {
+        return $this->hasMany(Show::class);
+    }
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
     }
 
     function Owner()

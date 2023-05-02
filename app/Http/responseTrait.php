@@ -1,6 +1,9 @@
 <?php
 
 namespace App\Http;
+
+use App\Models\Hall;
+use App\Models\Plan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\File;
 use Illuminate\Database\Eloquent\Model;
@@ -42,5 +45,71 @@ trait responseTrait
        // }
         return null;//apiResponse(401,'',"File doesn't exists");
     }
-
+    public function planResources(Plan $plan){
+        $photos=$plan->planPhotos;
+            if($photos){
+                $i=0;
+                for($i=0;$i<count($photos);$i++){
+                    $photo[$i]="http://127.0.0.1:8000/planner/planphoto/".$plan->id."/".$photos[$i]->id;
+                }
+            }
+        return [
+            'id'=>$plan->id,
+            'name'=>$plan->name,
+            'price'=>$plan->price,
+            'description'=>$plan->description,
+            'photos'=>$photo,
+        ];
+    }
+    public function hallResources(Hall $hall){
+        $photos=$hall->photos;
+            if($photos){
+                $i=0;
+                for($i=0;$i<count($photos);$i++){
+                    $photo[$i]="http://127.0.0.1:8000/owner/hallphoto/".$hall->id."/".$photos[$i]->id;
+                }
+            }
+            $videos=$hall->videos;
+            if($videos){
+                $i=0;
+                for($i=0;$i<count($videos);$i++){
+                    $video[$i]="http://127.0.0.1:8000/owner/hallvideo/".$hall->id."/".$videos[$i]->id;
+                }
+            }
+            $shows=$hall->shows;
+            if($shows){
+                $i=0;
+                for($i=0;$i<count($shows);$i++){
+                    $show[$i]=$shows[$i]->showname;
+                }
+            }
+            $services=$hall->services;
+            if($services){
+                $i=0;
+                for($i=0;$i<count($services);$i++){
+                    $service[$i]=$services[$i]->servicename;
+                }
+            }
+        return [
+            'id'=>$hall->id,
+            'name'=>$hall->name,
+            'address'=>$hall->address,
+            'rooms'=>$hall->rooms,
+            'chairs'=>$hall->chairs,
+            'price'=>$hall->price,
+            'hours'=>$hall->hours,
+            'tables'=>$hall->tables,
+            'type'=>$hall->type,
+            'capacity'=>$hall->capacity,
+            'available'=>$hall->available,
+            'start_party'=>$hall->start_party,
+            'end_party'=>$hall->end_party,
+            'person_id'=>$hall->person_id,
+            'verified'=>$hall->verified,
+            'photos'=>$photo,
+            'videos'=>$video,
+            'show'=>$show,
+            'service'=>$service
+        ];
+    }
 }

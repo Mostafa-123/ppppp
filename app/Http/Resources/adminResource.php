@@ -16,7 +16,7 @@ class adminResource extends JsonResource
     {
         $photo=$this->photo;
         if($photo){
-            $photo="http://127.0.0.1:8000/api/adminphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/admin/auth/adminphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
@@ -24,6 +24,7 @@ class adminResource extends JsonResource
             'email'=>$this->email,
             'password'=>$this->password,
             'photo'=>$photo,
+            'token'=>$this->api_token,
         ];
     }
 }

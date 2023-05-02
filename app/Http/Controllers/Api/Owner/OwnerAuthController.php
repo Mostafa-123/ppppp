@@ -81,9 +81,9 @@ class OwnerAuthController extends Controller
         }
 
     }
-    public function userProfile() {
-        $planner=Auth::guard('owner-api')->user();
-        return response()->json(new ownerResource($planner));
+    public function ownerProfile() {
+        $owner=Auth::guard('owner-api')->user();
+        return response()->json(new ownerResource($owner));
     }
     public function registerOwner(Request $request) {
         $validator = Validator::make($request->all(), [
@@ -93,6 +93,7 @@ class OwnerAuthController extends Controller
             'country' => 'required|string|max:100',
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
+            'phone' => 'required|string|min:11|max:11',
             'photo'
 
 
@@ -124,11 +125,12 @@ class OwnerAuthController extends Controller
                 $photo = $owner->photo;
             }
             $newData = [
-                'name' => $request->name,
-                'password' => $request->password,
-                'country' => $request->country,
-                'religion' => $request->religion,
-                'gender' => $request->gender,
+                'name' => $request->name?$request->name:$owner->name,
+                'password' => $request->password?$request->password:$owner->password,
+                'country' => $request->country?$request->country:$owner->country,
+                'religion' => $request->religion?$request->religion:$owner->religion,
+                'gender' => $request->gender?$request->gender:$owner->gender,
+                'phone' => $request->phone?$request->phone:$owner->phone,
                 'photo' => $photo,
             ];
             $owner->update($newData);

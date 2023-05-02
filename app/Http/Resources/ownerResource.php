@@ -16,7 +16,7 @@ class ownerResource extends JsonResource
     {
         $photo=$this->photo;
         if($photo){
-            $photo="http://127.0.0.1:8000/api/ownerphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/owner/ownerphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
@@ -27,6 +27,7 @@ class ownerResource extends JsonResource
             'religion'=>$this->religion,
             'gender'=>$this->gender,
             'photo'=>$photo,
+            'token'=>$this->api_token,
         ];
     }
 

@@ -24,7 +24,7 @@ class Plan extends Model
         $this->belongsTo(Planner::class);
     }
 
-    public function planPhoto()
+    public function planPhotos()
     {
         return $this->hasMany(PlanPhoto::class);
     }

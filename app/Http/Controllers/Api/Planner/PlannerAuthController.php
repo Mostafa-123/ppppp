@@ -36,6 +36,7 @@ class PlannerAuthController extends Controller
             'country' => 'required|string|max:100',
             'religion' => 'required|string|max:100',
             'gender' => 'required|string|max:100',
+            'phone' => 'required|string|min:11|max:11',
             'photo'
         ]);
         if($validator->fails()){
@@ -53,11 +54,11 @@ class PlannerAuthController extends Controller
             'planner' => new plannersResource($planner),
         ], 201);
     }
-    public function getPlannerPhoto($user_id){
-        $user=Planner::find($user_id);
-        if($user){
-            if($user->photo){
-                return $this->getFile($user->photo);
+    public function getPlannerPhoto($planner_id){
+        $planner=Planner::find($planner_id);
+        if($planner){
+            if($planner->photo){
+                return $this->getFile($planner->photo);
             }
             return $this->response("", "This planner doesn't has photo",404);
         }
@@ -90,7 +91,7 @@ class PlannerAuthController extends Controller
         $planner = Auth::guard('planner-api')->user();
         $planner->api_token = $token;
         //return token
-        return $this->returnData('planner',$planner,"data have returned");
+        return $this->returnData('planner',new plannersResource($planner),"data have returned");
 
 
 
@@ -106,7 +107,7 @@ class PlannerAuthController extends Controller
 
     }
 
-    public function userProfile() {
+    public function plannerProfile() {
         $planner=Auth::guard('planner-api')->user();
         return response()->json(new plannersResource($planner));
     }
@@ -130,6 +131,7 @@ class PlannerAuthController extends Controller
                 'country' => $request->country?$request->country:$planner->country,
                 'religion' => $request->religion?$request->religion:$planner->religion,
                 'gender' => $request->gender?$request->gender:$planner->gender,
+                'phone' => $request->phone?$request->phone:$planner->phone,
                 'photo' => $photo,
             ];
             $planner->update($newData);

@@ -2,19 +2,23 @@
 
 namespace App\Http\Resources;
 
+use App\Models\Plan;
 use Illuminate\Http\Resources\Json\JsonResource;
-
 class PlanResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
+     *$request
+     *  @param \Illuminate\Http\Request;
+     *  @return array|\Illuminate\Contracts\Support\Arrayable|\JsonSerializable
      */
     public function toArray($request)
     {
-        $photos=$request->planPhoto;
+        $id=$request->id;
+        $plan=Plan::find($request->id);
+        $photos=$request->planPhotos;
+        print($id);die;
             if($photos){
                 $i=0;
                 for($i=0;$i<count($photos);$i++){

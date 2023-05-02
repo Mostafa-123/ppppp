@@ -1,6 +1,8 @@
 <?php
 
 /* use App\Http\Controllers\AuthController; */
+
+use App\Http\Controllers\Api\Admin\AdminController;
 use App\Http\Controllers\Api\Admin\AuthController;
 use App\Http\Controllers\BookingController;
 use App\Http\Controllers\Api\User\AuthController as UserAuthController;
@@ -31,8 +33,12 @@ Route::group([
 ], function ($router) {
 
     Route::group(['namespace'=>'Admin'],function (){
-        Route::post('login', [AuthController::class, 'login'])->name('login-admin');
-        Route::post('logout',[ AuthController::class,'logout'])-> middleware(['auth.guard:admin-api']);
+        Route::post('adminLogin', [AuthController::class, 'adminLogin'])->name('login-admin');
+        Route::post('adminLogout',[ AuthController::class,'adminLogout'])-> middleware(['auth.guard:admin-api']);
+        Route::post('registerAdmin', [AuthController::class, 'registerAdmin']);
+        Route::get('adminProfile', [AuthController::class, 'adminProfile']);
+        Route::post('updateAdmin/{admin_id}', [AuthController::class, 'updateAdmin']);
+        Route::get('adminphoto/{admin_id}', [AuthController::class, 'getAdminPhoto']);
 
 
         // Hall
@@ -47,21 +53,49 @@ Route::group([
            Route::post('/bookings/{bookingId}/confirm', [BookingController::class, 'confirmBooking']);
            Route::post('/bookings/{bookingId}/reject', [BookingController::class, 'rejectBooking'])->name('bookings.reject');
            Route::delete('/bookings/rejected', [BookingController::class, 'destroyRejectedBookings']);
-
-
-
-
-
             });
+});
+
+Route::group([
+    'middleware' => ['api'],
+    'namespace'=>'Api',
+
+], function ($router) {
+
+    Route::group(['namespace'=>'Admin'],function (){
+        Route::post('addUser', [AdminController::class, 'addUser']);
+        Route::post('addPlanner', [AdminController::class, 'addPlanner']);
+        Route::post('addOwner', [AdminController::class, 'addOwner']);
+        Route::post('addAdmin', [AdminController::class, 'addAdmin']);
+        Route::get('getAllUsers', [AdminController::class, 'getAllUsers']);
+        Route::get('getAllPlanners', [AdminController::class, 'getAllPlanners']);
+        Route::get('getAllOwners', [AdminController::class, 'getAllOwners']);
+        Route::get('getAllAdmins', [AdminController::class, 'getAllAdmins']);
+        Route::get('getUserCount', [AdminController::class, 'getUserCount']);
+        Route::get('getOwnersCount', [AdminController::class, 'getOwnersCount']);
+        Route::get('getPlannersCount', [AdminController::class, 'getPlannersCount']);
+        Route::get('getAdminsCount', [AdminController::class, 'getAdminsCount']);
+        Route::get('deleteUser/{user_id}', [AdminController::class, 'deleteUser']);
+        Route::get('deleteAdmin/{admin_id}', [AdminController::class, 'deleteAdmin']);
+        Route::get('deletePlanner/{planner_id}', [AdminController::class, 'deletePlanner']);
+        Route::get('deleteOwner/{owner_id}', [AdminController::class, 'deleteOwner']);
+        Route::get('deleteHall/{hall_id}', [AdminController::class, 'destroyHall']);
+        Route::get('deletePlan/{plan_id}', [AdminController::class, 'deletePlan']);
+        Route::get('getplan/{plan_id}', [AdminController::class, 'getplan']);
+        Route::get('gethall/{hall_id}', [AdminController::class, 'gethall']);
+        Route::get('getConfirmedHalls', [AdminController::class, 'getConfirmedHalls']);
+        Route::get('getUnConfirmedHalls', [AdminController::class, 'getUnConfirmedHalls']);
+        Route::get('getCanceledHalls', [AdminController::class, 'getCanceledHalls']);
+        Route::get('getAllHalls', [AdminController::class, 'getAllHalls']);
 
 
 
 
+    });
 
 
-    Route::post('/register', [AuthController::class, 'register']);
-    Route::post('/refresh', [AuthController::class, 'refresh']);
-    Route::get('/user-profile', [AuthController::class, 'userProfile']);
+        // Hall
+
 });
 
 

@@ -93,7 +93,7 @@ return [
             'driver' => 'eloquent',
             'model' => App\Models\Owner::class,
         ],
-        'Planners' => [
+        'planners' => [
             'driver' => 'eloquent',
             'model' => App\Models\Planner::class,
         ],

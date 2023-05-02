@@ -47,18 +47,47 @@ class AuthController extends Controller
             'admin' => new adminResource($admin),
         ], 201);
     }
-    public function getAdminPhoto($owner_id){
-        $owner=Admin::find($owner_id);
-        if($owner){
-            if($owner->photo){
-                return $this->getFile($owner->photo);
+
+    public function getAdminPhoto($admin_id){
+        $admin=Admin::find($admin_id);
+        if($admin){
+            if($admin->photo){
+                return $this->getFile($admin->photo);
             }
-            return $this->response("", "This Patient doesn't has photo",404);
+            return $this->response("", "This admin doesn't has photo",404);
         }
-        return $this->response( "", 'this Pateint_id not found',401);
+        return $this->response( "", 'this admin_id not found',401);
     }
 
-    public function login(Request $request){
+    public function adminProfile() {
+        $admin=Auth::guard('admin-api')->user();
+        return response()->json(new adminResource($admin));
+    }
+
+    public function updateAdmin(Request $request, $admin_id)
+    {
+        $admin = Admin::find($admin_id);
+        if ($admin) {
+            $photo = $request->photo;
+            if ($photo && $admin->photo) {
+                $this->deleteFile($admin->photo);
+                $photo = $this->uploadFile($request, 'adminsImages', 'photo');
+            } elseif ($photo != null && $admin->photo == null) {
+                $photo = $this->uploadFile($request, 'adminsImages', 'photo');
+            } else {
+                $photo = $admin->photo;
+            }
+            $newData = [
+                'name' => $request->name?$request->name:$admin->name,
+                'password' => $request->password?$request->password:$admin->password,
+                'photo' => $photo,
+            ];
+            $admin->update($newData);
+        }
+        return $this->response(new adminResource($admin), 'admin updated successfully', 201);
+    }
+
+    public function adminLogin(Request $request){
 
 
         try {
@@ -96,10 +125,7 @@ class AuthController extends Controller
 
     }
 
-
-
-
-    public function logout(Request $request)
+    public function adminLogout(Request $request)
     {
          $token = $request -> header('auth-token');
         if($token){

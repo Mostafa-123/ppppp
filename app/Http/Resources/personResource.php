@@ -16,7 +16,7 @@ class personResource extends JsonResource
     {
         $photo=$this->photo;
         if($photo){
-            $photo="http://127.0.0.1:8000/api/userphoto/".$this->id;
+            $photo="http://127.0.0.1:8000/user/auth/userphoto/".$this->id;
         }
         return [
             'id'=>$this->id,
@@ -29,6 +29,7 @@ class personResource extends JsonResource
             'national_id'=>$this->national_id,
             'role'=>$this->role,
             'photo'=>$photo,
+            'token'=>$this->api_token,
         ];
     }
 }

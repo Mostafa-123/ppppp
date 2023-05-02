@@ -27,6 +27,7 @@ class plannersResource extends JsonResource
             'religion'=>$this->religion,
             'gender'=>$this->gender,
             'photo'=>$photo,
+            'token'=>$this->api_token,
         ];
     }
 }
